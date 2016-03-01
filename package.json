@@ -1,0 +1,26 @@
+{
+  "name": "real-poll",
+  "version": "1.0.0",
+  "description": "A real-time polling application",
+  "main": "server.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rjohnson4444/real-poll.git"
+  },
+  "author": "Ryan Johnson",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rjohnson4444/real-poll/issues"
+  },
+  "homepage": "https://github.com/rjohnson4444/real-poll#readme",
+  "dependencies": {
+    "express": "^4.13.4",
+    "jade": "^1.11.0"
+  },
+  "devDependencies": {
+    "mocha": "^2.4.5"
+  }
+}
