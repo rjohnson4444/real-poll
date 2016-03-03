@@ -1,1 +1,14 @@
-h1 Hello
+doctype html
+html(lang="en")
+  head
+    title= title
+  body
+    h1= title
+    form(action="/polls", method="post")
+      div.input
+        span.label Poll
+        br
+        input(type="text", name="pollTopic", placeholder="What are you polling?")
+      div.actions
+        br
+        input(type="submit", value="Generate")

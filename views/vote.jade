@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  head
+    title= title
+  body
+    h1= pollQuestion
+    form(action="/results", method="post")
+      ul
+        li
+          |   Answer 1
+          br
+          input(type="radio", name="vote", value="1")
+        li
+          |   Answer 2
+          br
+          input(type="radio", name="vote", value="2")
+        li
+          |   Answer 3
+          br
+          input(type="radio", name="vote", value="3")
+        li
+          |   Answer 4
+          br
+          input(type="radio", name="vote", value="4")
+          br
+          input(type="submit", value="Vote")
