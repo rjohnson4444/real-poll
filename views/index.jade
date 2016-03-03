@@ -4,8 +4,11 @@ html(lang="en")
     title= title
   body
     h1= title
-    br
-    input(type="text" placeholder="What's your question?")
-    br
-    button(href="/polls").
-      Generate Poll
+    form(action="/polls", method="post")
+      div.input
+        span.label Poll
+        br
+        input(type="text", name="pollTopic", placeholder="What are you polling?")
+      div.actions
+        br
+        input(type="submit", value="Generate")
