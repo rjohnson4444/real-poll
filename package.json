@@ -4,7 +4,8 @@
   "description": "A real-time polling application",
   "main": "server.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start:watch": "nodemon -x 'npm start' -e 'js json'"
   },
   "repository": {
     "type": "git",
@@ -18,10 +19,12 @@
   "homepage": "https://github.com/rjohnson4444/real-poll#readme",
   "dependencies": {
     "express": "^4.13.4",
-    "jade": "^1.11.0"
+    "jade": "^1.11.0",
+    "shortid": "^2.2.4"
   },
   "devDependencies": {
     "mocha": "^2.4.5",
+    "nodemon": "^1.9.1",
     "request": "^2.69.0"
   }
 }
