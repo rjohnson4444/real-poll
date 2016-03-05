@@ -1,11 +1,11 @@
-doctype html
-html(lang="en")
-  head
-    title= title
+extends layout
+
+block content
   body
-    h1= pollQuestion
-      ul
-        li Answer 1: 6 votes
-        li Answer 2: 2 votes
-        li Answer 3: 9 votes
-        li Answer 4: 2 votes
+    .container
+      .row
+        .well
+          h1= pollQuestion
+            h4.ul
+              each val, index in currentPollInfo
+                li #{index} currently has #{val} votes.

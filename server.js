@@ -1,15 +1,15 @@
-const express    = require('express')
-const app        = express();
+'use strict'
+require('locus')
+const express       = require('express');
+const app           = express();
 const generateUrlId = require('./lib/generate-id');
-const bodyParser = require('body-parser');
-const voteUrlId    =  generateUrlId();
-const resultsUrlId =  generateUrlId();
-
+const bodyParser    = require('body-parser');
+const Poll          = require('./lib/poll');
 
 module.exports = app;
 
 app.set('port', process.env.PORT || 3000);
-app.use(express.static('static'));
+app.use(express.static('public'));
 
 app.use( bodyParser.json() );
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -17,46 +17,51 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('view engine', 'jade');
 
 app.locals.title = 'Real-Poll';
-app.locals.pollTopic = {}
+app.locals.poll  = {};
 
 app.get('/', (req, res) => {
     res.render('index');
 });
 
-app.get(`/${resultsUrlId}/results`, (req, res) => {
-    var id = resultsUrlId;
-    var currentPollTopic = app.locals.pollTopic[id]
+app.get(`/:id/results`, (req, res) => {
+    let id = req.params.id
+    let currentPollTopic = app.locals.poll[id]
+    let pollQuestion     = currentPollTopic.pollQuestion
+    let currentPollInfo  = currentPollTopic.options
 
-    res.render('results', { pollQuestion: currentPollTopic });
+    res.render('results', { pollQuestion: pollQuestion, currentPollInfo: currentPollInfo });
 });
 
-app.get(`/${voteUrlId}`, (req, res) => {
-    var id = resultsUrlId;
-    var currentPollTopic = app.locals.pollTopic[id]
+app.get('/:id', (req, res) => {
+    let id = req.params.id
+    let currentPollInfo = app.locals.poll[id];
+    let pollQuestion    = currentPollInfo.pollQuestion
+    let pollChoices     = Object.keys(currentPollInfo.options);
 
-    res.render('vote', { pollQuestion: currentPollTopic });
+    res.render('vote', { id: id, pollQuestion: pollQuestion, choices: pollChoices });
 });
 
 app.post('/results', (req, res) => {
-    var id = resultsUrlId;
-    var currentPollTopic = app.locals.pollTopic[id]
+    let id = Object.keys(req.body)[0];
+    let pollQuestion = app.locals.poll[id].pollQuestion
+    let pollOptions  = app.locals.poll[id].options
+    let currentPoll  = app.locals.poll[id]
 
-    // value that is returned from the radio button
-    console.log(req.body.vote)
-    res.render('vote', { pollQuestion: currentPollTopic });
+    res.render('successVote', { pollQuestion: pollQuestion, pollOptions: pollOptions });
 });
 
 app.post('/polls', (req, res) => {
-    var id = resultsUrlId;
-    app.locals.pollTopic[id] = req.body.pollTopic
-    // Initiate the 'polling' room
+    let voteUrlId    =  generateUrlId();
+    let resultsUrlId =  generateUrlId();
+    let voteUrl      = `${req.protocol}://${req.get('host')}/${voteUrlId}`
+    let resultsUrl   = `${req.protocol}://${req.get('host')}/${resultsUrlId}/results`
+    let pollQuestion = req.body.poll.topic
+    let choices      = req.body.poll.choice
 
-    res.redirect('polls');
-});
+    let poll = new Poll(pollQuestion, choices)
 
-app.get('/polls', (req, res) => {
-    var voteUrl    = `${req.protocol}://${req.get('host')}/${voteUrlId}`
-    var resultsUrl = `${req.protocol}://${req.get('host')}/${resultsUrlId}/results`
+    app.locals.poll[resultsUrlId] = poll;
+    app.locals.poll[voteUrlId]    = poll;
 
     res.render('pollGenerate', { voteUrl: voteUrl, resultsUrl: resultsUrl });
 });

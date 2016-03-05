@@ -1,14 +1,18 @@
-doctype html
-html(lang="en")
-  head
-    title= title
-  body
-    h1= title
-    form(action="/polls", method="post")
-      div.input
-        span.label Poll
-        br
-        input(type="text", name="pollTopic", placeholder="What are you polling?")
-      div.actions
-        br
-        input(type="submit", value="Generate")
+extends layout
+
+block content
+  .container
+    .row.col-md-offset-3.col-md-6
+        h1.text-center= title
+        .well
+          form(action="/polls", method="post").form-group
+            h4 What's your polling question?
+            input(type="text", name="poll[topic]", placeholder="What are you polling?").form-control
+            br
+            div.choices
+              h4 Poll Choices
+              input(type="text", name="poll[choice][]", placeholder="Choice").form-control
+            div.actions
+              br
+              input(type="submit", value="Generate Poll").btn.btn-primary
+              a(class="btn btn-default add-input pull-right") Add Choice
