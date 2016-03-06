@@ -5,8 +5,19 @@ const app           = express();
 const generateUrlId = require('./lib/generate-id');
 const bodyParser    = require('body-parser');
 const Poll          = require('./lib/poll');
+const socketIo      = require('socket.io')
+const http          = require('http');
+const port          = process.env.PORT || 3000;
 
 module.exports = app;
+
+const server = http.createServer(app)
+
+server.listen(port, () => {
+    console.log('Listening on port ' + port + '.')
+});
+
+const io = socketIo(server);
 
 app.set('port', process.env.PORT || 3000);
 app.use(express.static('public'));
@@ -18,6 +29,7 @@ app.set('view engine', 'jade');
 
 app.locals.title = 'Real-Poll';
 app.locals.poll  = {};
+
 
 app.get('/', (req, res) => {
     res.render('index');
@@ -66,9 +78,8 @@ app.post('/polls', (req, res) => {
     res.render('pollGenerate', { voteUrl: voteUrl, resultsUrl: resultsUrl });
 });
 
-if (!module.parent) {
-    app.listen(app.get('port'), () => {
-        console.log(`${app.locals.title} is running on ${app.get('port')}.`);
-    });
-}
+io.on('connection', (socket) => {
+    console.log('A user has connected', io.engine.clientsCount)
+})
+
 
