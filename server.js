@@ -58,8 +58,9 @@ app.post('/results', (req, res) => {
     let pollQuestion = app.locals.poll[id].pollQuestion
     let pollOptions  = app.locals.poll[id].options
     let currentPoll  = app.locals.poll[id]
+    let currentVoteOption = req.body[id]
 
-    res.render('successVote', { pollQuestion: pollQuestion, pollOptions: pollOptions });
+    res.render('successVote', { pollQuestion: pollQuestion, pollOptions: pollOptions, vote: currentVoteOption });
 });
 
 app.post('/polls', (req, res) => {
@@ -78,8 +79,32 @@ app.post('/polls', (req, res) => {
     res.render('pollGenerate', { voteUrl: voteUrl, resultsUrl: resultsUrl });
 });
 
+
+// Sockets
+
 io.on('connection', (socket) => {
-    console.log('A user has connected', io.engine.clientsCount)
+    console.log('A user has connected', io.engine.clientsCount);
+
+    io.sockets.emit('userConnected', io.engine.clientsCount);
+
+    socket.on('message', (channel, message) => {
+        if (channel === 'setPollId') {
+            eval(locus)
+            let currentVoteCount = recordVote(message)
+        }
+
+        // io.sockets.emit('renderVoteCount', currentVoteCount)
+    })
+
+    socket.on('disconnect', () => {
+        console.log('A user has disconnected', io.engine.clientsCount);
+    })
 })
 
+function recordVote(vote) {
+    let poll = app.locals.poll[vote.pollId]
+    poll.options[vote.vote]++
+    return poll.options;
+}
 
+module.export = app;

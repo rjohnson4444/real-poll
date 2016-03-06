@@ -6,5 +6,5 @@ block content
       .well
         body
           h1= title
-          p <strong>Voting Url:</strong> #{voteUrl}
-          p <strong>View results at:</strong> #{resultsUrl}
+          p <strong>Voting Url:</strong> #[a(href="#{voteUrl}") #{voteUrl}]
+          p <strong>View results at:</strong> #[a(href="#{resultsUrl}") #{resultsUrl}]
