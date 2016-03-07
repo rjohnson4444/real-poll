@@ -1,5 +1,5 @@
 'use strict'
-require('locus')
+
 const express       = require('express');
 const app           = express();
 const generateUrlId = require('./lib/generate-id');
