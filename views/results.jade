@@ -3,10 +3,14 @@ extends layout
 block content
   body
     .container
-      .row
+      .row.col-md-offset-3.col-md-6
+        h1.text-center= pollQuestion
         .well
-          h1= pollQuestion
-            h4.ul#admin-view
-              each val, index in currentPollInfo
-                li #{index} currently has #{val} votes.
+          #close-poll-message
+          h4.ul#admin-view
+            each val, index in currentPollInfo
+              li #{index} currently has #{val} votes.
+        a().btn.btn-primary#close-poll Close Poll
+        br
+        br
         #connection-count

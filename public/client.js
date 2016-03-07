@@ -7,7 +7,9 @@ let $userConnection = $('#connection-count');
 let $buttons = $('.well#vote button');
 let $generatePollButtion = $('#generate-poll');
 let $renderVotes = $('#render-votes');
-let $adminView = $('#admin-view')
+let $adminView = $('#admin-view');
+let $closePoll = $('#close-poll');
+let $closePollMessage = $('#close-poll-message');
 let pollId = window.location.pathname.split("/")[1];
 let alreadyVoted = false;
 
@@ -20,6 +22,12 @@ $newChoice.on('click', (e) => {
 $generatePollButtion.on('click', (e) => {
     console.log("clicked button")
     socket.send('userConnected', { pollId: pollId });
+});
+
+// Close poll
+$closePoll.on('click', (e) => {
+    socket.send('closePoll', { id: pollId, closeMessage: $closePollMessage })
+    $closePollMessage.append("<h4>You have closed this poll.");
 })
 
 
@@ -29,7 +37,6 @@ socket.on('userConnected', (count) => {
 })
 
 for( let i = 0; i < $buttons.length; i++ ) {
-
     $buttons[i].addEventListener('click', (e) => {
         if(alreadyVoted) {
            socket.close();

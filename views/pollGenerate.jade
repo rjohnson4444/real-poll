@@ -2,9 +2,10 @@ extends layout
 
 block content
   .container
-    .row
+    .row.col-md-offset-3.col-md-6
+      h1.text-center= title
+      br
       .well
         body
-          h1= title
-          p <strong>Voting Url:</strong> #[a(href="#{voteUrl}") #{voteUrl}]
-          p <strong>View results at:</strong> #[a(href="#{resultsUrl}") #{resultsUrl}]
+          h4.p <strong>Voting Url:</strong> #[a(href="#{voteUrl}") #{voteUrl}]
+          h4.p <strong>View results at:</strong> #[a(href="#{resultsUrl}") #{resultsUrl}]

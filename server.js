@@ -52,7 +52,7 @@ app.get('/:id', (req, res) => {
     let currentPollInfo = app.locals.poll[id];
 
     if(!currentPollInfo) { res.sendStatus(400); }
-    if(!currentPollInfo.active) { res.render('closed') }
+    if(!currentPollInfo.active) { return res.render('closed') }
 
     let pollQuestion    = currentPollInfo.pollQuestion
     let pollChoices     = Object.keys(currentPollInfo.options);
@@ -103,6 +103,10 @@ io.on('connection', (socket) => {
             let currentVoteCount = recordVote(message)
             io.emit('renderVoteCount', currentVoteCount)
         }
+
+        if (channel === 'closePoll') {
+            closePoll(message);
+        }
     })
 
     socket.on('disconnect', () => {
@@ -115,6 +119,11 @@ function recordVote(vote) {
     poll.options[vote.vote]++
     console.log(poll.options)
     return poll.options;
+}
+
+function closePoll(response) {
+    let poll = app.locals.poll[response.id]
+    poll.active = false;
 }
 
 module.export = app;
