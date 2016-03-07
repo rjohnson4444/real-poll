@@ -3,12 +3,12 @@ extends layout
 block content
   .container
     .row.col-md-offset-3.col-md-6
-      h1= pollQuestion
-        .well
-          body
-            form(action="/results", method="post")
-              ul
-                each val in choices
-                  li= val
-                  input(type="radio", name="#{id}", value="#{val}")
-              input(type="submit", value="#{id}").btn.btn-primary
+      h1.text-center= pollQuestion
+      br
+      .well#vote
+        body
+          form(action="/results", method="post")
+            ul
+              each val in choices
+                h4.li= val
+                button(type="submit", name="#{id}" value="#{val}").btn.btn-primary #{val}
