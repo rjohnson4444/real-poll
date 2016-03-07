@@ -6,7 +6,7 @@ block content
       .row
         .well
           h1= pollQuestion
-            h4.ul
+            h4.ul#admin-view
               each val, index in currentPollInfo
                 li #{index} currently has #{val} votes.
         #connection-count

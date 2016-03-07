@@ -38,6 +38,9 @@ app.get('/', (req, res) => {
 app.get(`/:id/results`, (req, res) => {
     let id = req.params.id
     let currentPollTopic = app.locals.poll[id]
+
+    if(!currentPollTopic) { res.sendStatus(400); }
+
     let pollQuestion     = currentPollTopic.pollQuestion
     let currentPollInfo  = currentPollTopic.options
 
@@ -47,6 +50,9 @@ app.get(`/:id/results`, (req, res) => {
 app.get('/:id', (req, res) => {
     let id = req.params.id
     let currentPollInfo = app.locals.poll[id];
+
+    if(!currentPollInfo) { res.sendStatus(400); }
+
     let pollQuestion    = currentPollInfo.pollQuestion
     let pollChoices     = Object.keys(currentPollInfo.options);
 
@@ -55,15 +61,20 @@ app.get('/:id', (req, res) => {
 
 app.post('/results', (req, res) => {
     let id = Object.keys(req.body)[0];
-    let pollQuestion = app.locals.poll[id].pollQuestion
-    let pollOptions  = app.locals.poll[id].options
     let currentPoll  = app.locals.poll[id]
+
+    if(!currentPoll) { return res.sendStatus(400); }
+
+    let pollQuestion = currentPoll.pollQuestion
+    let pollOptions  = currentPoll.options
     let currentVoteOption = req.body[id]
 
     res.render('successVote', { pollQuestion: pollQuestion, pollOptions: pollOptions, vote: currentVoteOption });
 });
 
 app.post('/polls', (req, res) => {
+    if(!req.body.poll) { return res.sendStatus(400); }
+
     let voteUrlId    =  generateUrlId();
     let resultsUrlId =  generateUrlId();
     let voteUrl      = `${req.protocol}://${req.get('host')}/${voteUrlId}`
@@ -84,16 +95,13 @@ app.post('/polls', (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('A user has connected', io.engine.clientsCount);
-
     io.sockets.emit('userConnected', io.engine.clientsCount);
 
     socket.on('message', (channel, message) => {
         if (channel === 'setPollId') {
-            eval(locus)
             let currentVoteCount = recordVote(message)
+            io.emit('renderVoteCount', currentVoteCount)
         }
-
-        // io.sockets.emit('renderVoteCount', currentVoteCount)
     })
 
     socket.on('disconnect', () => {
@@ -104,6 +112,7 @@ io.on('connection', (socket) => {
 function recordVote(vote) {
     let poll = app.locals.poll[vote.pollId]
     poll.options[vote.vote]++
+    console.log(poll.options)
     return poll.options;
 }
 
