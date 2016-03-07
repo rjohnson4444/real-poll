@@ -101,7 +101,7 @@ io.on('connection', (socket) => {
     socket.on('message', (channel, message) => {
         if (channel === 'currentPoll') {
             let currentVoteCount = recordVote(message);
-            io.emit('renderVoteCountForAdmin', currentVoteCount);
+            io.sockets.emit('renderVoteCountForAdmin', currentVoteCount);
         }
 
         if (channel === 'closePoll') {
