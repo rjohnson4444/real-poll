@@ -99,15 +99,16 @@ io.on('connection', (socket) => {
     io.sockets.emit('userConnected', io.engine.clientsCount);
 
     socket.on('message', (channel, message) => {
-        if (channel === 'setPollId') {
-            let currentVoteCount = recordVote(message)
-            io.emit('renderVoteCount', currentVoteCount)
+        if (channel === 'currentPoll') {
+            let currentVoteCount = recordVote(message);
+            io.emit('renderVoteCountForAdmin', currentVoteCount);
         }
 
         if (channel === 'closePoll') {
             closePoll(message);
         }
-    })
+
+    });
 
     socket.on('disconnect', () => {
         console.log('A user has disconnected', io.engine.clientsCount);
@@ -117,7 +118,6 @@ io.on('connection', (socket) => {
 function recordVote(vote) {
     let poll = app.locals.poll[vote.pollId]
     poll.options[vote.vote]++
-    console.log(poll.options)
     return poll.options;
 }
 

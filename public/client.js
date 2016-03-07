@@ -3,9 +3,7 @@
 const socket = io();
 
 let $newChoice = $('.add-input');
-let $userConnection = $('#connection-count');
 let $buttons = $('.well#vote button');
-let $generatePollButtion = $('#generate-poll');
 let $renderVotes = $('#render-votes');
 let $adminView = $('#admin-view');
 let $closePoll = $('#close-poll');
@@ -18,11 +16,6 @@ $newChoice.on('click', (e) => {
     $('.choices').append("<br><br><input type='text' name='poll[choice][]' placeholder='Choice' class='form-control' ></input>");
 });
 
-// Get poll id
-$generatePollButtion.on('click', (e) => {
-    console.log("clicked button")
-    socket.send('userConnected', { pollId: pollId });
-});
 
 // Close poll
 $closePoll.on('click', (e) => {
@@ -30,24 +23,17 @@ $closePoll.on('click', (e) => {
     $closePollMessage.append("<h4>You have closed this poll.");
 })
 
-
 socket.on('userConnected', (count) => {
     console.log(count);
-    $userConnection.text(`Connected count ${count}`);
 })
 
 for( let i = 0; i < $buttons.length; i++ ) {
     $buttons[i].addEventListener('click', (e) => {
-        if(alreadyVoted) {
-           socket.close();
-           return;
-        }
-        socket.send('setPollId', { pollId: pollId, vote: e.target.value })
-        alreadyVoted = true;
+        socket.send('currentPoll', { pollId: pollId, vote: e.target.value });
     });
 }
 
-socket.on('renderVoteCount', (message) => {
+socket.on('renderVoteCountForAdmin', (message) => {
     $adminView.empty();
 
     for(let vote in message) {
@@ -55,4 +41,5 @@ socket.on('renderVoteCount', (message) => {
         $adminView.append(currentVote);
     }
 })
+
 
