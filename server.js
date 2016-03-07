@@ -52,6 +52,7 @@ app.get('/:id', (req, res) => {
     let currentPollInfo = app.locals.poll[id];
 
     if(!currentPollInfo) { res.sendStatus(400); }
+    if(!currentPollInfo.active) { res.render('closed') }
 
     let pollQuestion    = currentPollInfo.pollQuestion
     let pollChoices     = Object.keys(currentPollInfo.options);
